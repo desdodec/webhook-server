@@ -3,15 +3,21 @@ import os
 
 app = Flask(__name__)
 
-@app.route('/webhook', methods=['POST'])
-def webhook():
+# Webhook endpoint with secret token in the URL path
+@app.route('/webhook/<secret>', methods=['POST'])
+def webhook(secret):
+    expected_secret = os.environ.get("MONDAY_WEBHOOK_SECRET")
+    if secret != expected_secret:
+        return jsonify({"error": "unauthorized"}), 403
+
     data = request.json
-    # Handle Monday.com's challenge verification
+
+    # Handle Monday.com's initial challenge verification
     if "challenge" in data:
         return jsonify({"challenge": data["challenge"]})
 
-    # Handle actual button click events
-    print("Received webhook from Monday:")
+    # Log the incoming webhook data
+    print("✅ Received webhook payload:")
     print(data)
 
     return jsonify({"status": "ok"}), 200

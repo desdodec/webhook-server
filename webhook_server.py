@@ -7,6 +7,8 @@ app = Flask(__name__)
 @app.route('/webhook/<secret>', methods=['POST'])
 def webhook(secret):
     expected_secret = os.environ.get("MONDAY_WEBHOOK_SECRET")
+    print(f"🔐 Received secret: {secret}")
+    print(f"🔐 Expected secret: {expected_secret}")
     if secret != expected_secret:
         return jsonify({"error": "unauthorized"}), 403
 

@@ -11,7 +11,16 @@ LOCAL_SERVER_URL = "https://2d596750fb3f.ngrok-free.app"  # Replace with your ac
 # Webhook endpoint that works with Monday.com
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    data = request.json
+    print("🚨 WEBHOOK ENDPOINT HIT!")  # This should show up immediately
+    print(f"📥 Request method: {request.method}")
+    print(f"📥 Request headers: {dict(request.headers)}")
+    
+    try:
+        data = request.json
+        print("📄 Successfully parsed JSON data")
+    except Exception as e:
+        print(f"❌ Error parsing JSON: {e}")
+        return jsonify({"error": "Invalid JSON"}), 400
     
     # Handle Monday.com's initial challenge verification
     if "challenge" in data:
